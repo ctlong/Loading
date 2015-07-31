@@ -20,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/WDI-HK-8/Loading/issues"
   },
-  "homepage": "https://github.com/WDI-HK-8/Loading#readme"
+  "homepage": "https://github.com/WDI-HK-8/Loading#readme",
+  "dependencies": {
+    "handlebars": "^3.0.3",
+    "hapi": "^8.8.1",
+    "paths": "^0.1.1"
+  }
 }
