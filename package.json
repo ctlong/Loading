@@ -1,0 +1,24 @@
+{
+  "name": "loading",
+  "version": "0.0.1",
+  "description": "Site for laundry machine reservations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WDI-HK-8/Loading.git"
+  },
+  "keywords": [
+    "wdi",
+    "laundry",
+    "project"
+  ],
+  "author": "Carson Long",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WDI-HK-8/Loading/issues"
+  },
+  "homepage": "https://github.com/WDI-HK-8/Loading#readme"
+}
