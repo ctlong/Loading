@@ -25,7 +25,7 @@ $(document).ready(function() {
           password: this.password
         }
       },
-      datatype: 'json',
+      dataType: 'json',
       success: function(response) {
         if(response.ok) {
           this.loggedIn();

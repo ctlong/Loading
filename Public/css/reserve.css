@@ -52,3 +52,13 @@ section {
 section:nth-child(2) {
   margin-top: 50px;
 }
+
+.table-bordered > tbody > tr:first-child {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.table-bordered > tbody > tr > td:first-child {
+  font-weight: bold;
+  font-size: 15px;
+}

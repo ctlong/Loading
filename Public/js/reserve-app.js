@@ -4,10 +4,54 @@ $(document).ready(function() {
     this.date = date;
   }
 
+  var fillTable = function(response,table,hour) {
+    for(var a=hour;a<24;a++) {
+      var html = '';
+      html += '<tr>';
+      html +=   '<td>';
+      html +=     a + ':00';
+      html +=   '</td>';
+      for(var b=1;b<6;b++) {
+        var stylish = '<td style="background-color:lightgrey;">';
+        var input = 'Open';
+        for(var c=0;c<response.length;c++) {
+          if(response[c].machine == b && response[c].hour == a) {
+            input = response[c].user;
+            stylish = '<td>';
+          }
+        }
+        html += stylish;
+        html +=   input;
+        html += '</td>';
+      }
+      html += '</tr>'
+      $('#table'+table).append(html);
+    }
+  };
+
+  var getReservationData = function(date,table) {
+    date = date.replace(' ','-');
+    date = date.replace(' ','-');
+    date = date.replace(' ','-');
+
+    $.ajax({
+      type: 'GET',
+      url: 'reservations/day=' + date,
+      dataType: 'json',
+      success: function(response) {
+        if(table == 1) {
+          fillTable(response,table,parseInt(new Date().toString().slice(16,18)));
+        } else {
+          fillTable(response,table,0);
+        }
+      }
+    });
+  };
+
   var loggedOut = function() {
     $.ajax({
       type: 'GET',
-      url: url,
+      url: '/',
       success: function(response) {
         window.location.href = "/";
       }
@@ -38,6 +82,7 @@ $(document).ready(function() {
     $.ajax({
       type: 'DELETE',
       url: 'sessions',
+      dataType: 'json',
       success: function(response) {
         if(response.ok || response.message) {
           loggedOut();
@@ -70,9 +115,11 @@ $(document).ready(function() {
     });
   });
 
-  //initiate dates on tables
+  //initiate dates on tables and fill tables
   today = new Date().toString();
   $('#today').text(today.slice(0,15));
   tmrw = new Date(today.slice(4,7) + ' 0' + (parseInt(today.slice(8,10))+1) + ' ' + today.slice(12,15)).toString().slice(0,15);
   $('#tmrw').text(tmrw);
+  getReservationData(today.slice(0,15),1);
+  getReservationData(tmrw,2);
 });
