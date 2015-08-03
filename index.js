@@ -26,7 +26,7 @@ var plugins = [
     register: require('yar'),
     options: {
       cookieOptions: {
-        password: procces.env.COOKIE_PASSWORD || 'hellohellohello',
+        password: process.env.COOKIE_PASSWORD || 'hellohellohello',
         isSecure: false
       }
     }
