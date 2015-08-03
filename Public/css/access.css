@@ -28,6 +28,24 @@ nav > h3 > .btn-default {
 }
 /*don't change above*/
 
-p {
+section {
+  margin-top: 60px;
+}
+
+section > p {
   text-align: center;
+  margin-top: 30px;
+}
+
+section > p:nth-child(3) {
+  margin-right: 40px;
+}
+
+section > p:nth-child(4) {
+  margin-right: 40px;
+}
+
+section > p > span{
+  margin-right: 15px;
+  font-size: 20px;
 }
