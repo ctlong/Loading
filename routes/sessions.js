@@ -50,6 +50,22 @@ exports.register = function(server,options,next) {
           }
         }
       }
+    },
+    {
+      method: 'DELETE',
+      path: '/sessions',
+      handler: function(request, reply) {
+        var session = request.session.get('hapi_twitter_session');
+        var db = request.server.plugins['hapi-mongodb'].db;
+        if (!session) { 
+          reply({ "message": "Already logged out" });
+        } else {
+          db.collection('sessions').remove({ "session_id": session.session_id }, function(err, writeResult) {
+            if (err) {reply('Internal MongoDB error', err);}
+            else {reply(writeResult);}
+          });
+        }
+      }
     }
   ]);
 

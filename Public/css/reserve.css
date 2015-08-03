@@ -28,6 +28,27 @@ nav > h3 > .btn-default {
 }
 /*don't change above*/
 
-.row {
+nav > h3 > .btn-group > .btn-default {
+  color: white;
+  font-size: 17px;
+  background-color: black;
+  padding: 0px 14px;
+  margin: 0px;
+  border: 0px;
+  height: 52px;
+  border-radius: 0px;
+}
+
+nav > h3 > .btn-group > .dropdown-menu {
+  margin-top: 0px;
+  /*border-radius: 0px;*/
+}
+
+section {
   text-align: center;
+  margin: 80px 5px;
+}
+
+section:nth-child(2) {
+  margin-top: 50px;
 }
