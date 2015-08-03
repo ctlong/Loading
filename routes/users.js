@@ -24,8 +24,8 @@ exports.register = function(server,options,next) {
             //encrypt password
               Bcrypt.genSalt(10, function(err, salt) {
                 Bcrypt.hash(user.password, salt, function(err, encrypted) {
-                    user.password = encrypted;
-                    db.collection('users').insert(user,function(err,writeResult) {
+                  user.password = encrypted;
+                  db.collection('users').insert(user,function(err,writeResult) {
                     if(err) {
                       reply('Internal Mongo Error', err);
                     } else {

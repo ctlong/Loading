@@ -13,7 +13,6 @@ $(document).ready(function() {
       url: 'log-in',
       success: function(response) {
         window.location.href = "/log-in";
-        runError('Your sign up was a success, you may now log in');
       }
     });
   };
@@ -52,7 +51,7 @@ $(document).ready(function() {
     html +=   input;
     html += '</p>';
 
-    $('section').prepend(html)
+    $('section').append(html)
   }
 
   $(document).on('click','#sign-up',function() {

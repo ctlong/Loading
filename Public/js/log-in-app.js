@@ -7,9 +7,9 @@ $(document).ready(function() {
   User.prototype.loggedIn = function() {
     $.ajax({
       type: 'GET',
-      url: 'reserv',
+      url: '/reserve',
       success: function(response) {
-        window.location.href = "/reserv";
+        window.location.href = "/reserve";
       }
     })
   };
@@ -46,7 +46,7 @@ $(document).ready(function() {
     html += '<p id="error">';
     html +=   input;
     html += '</p>';
-    $('section').prepend(html)
+    $('section').append(html)
   }
 
   $(document).on('click','#log-in',function() {
