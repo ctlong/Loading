@@ -19,7 +19,7 @@ exports.register = function(server,options,next) {
           };
           db.collection('users').count(uniqUserQuery,function(err,userExist) {
             if(userExist) {
-              reply('Error: username or email already exists', err);
+              reply({userExists : true});
             } else {
             //encrypt password
               Bcrypt.genSalt(10, function(err, salt) {
@@ -27,7 +27,7 @@ exports.register = function(server,options,next) {
                     user.password = encrypted;
                     db.collection('users').insert(user,function(err,writeResult) {
                     if(err) {
-                      reply(err);
+                      reply('Internal Mongo Error', err);
                     } else {
                       reply(writeResult);
                     }
@@ -48,15 +48,15 @@ exports.register = function(server,options,next) {
           }
         }
       }
-    },
-    {
-      method: 'GET',
-      path: '/users?id={id}',
-      handler: function(request,reply) {
-        var user_id = encodeURIComponent(request.params.id);
-        
-      }
     }
+    // {
+    //   method: 'GET',
+    //   path: '/users?id={id}',
+    //   handler: function(request,reply) {
+    //     var user_id = encodeURIComponent(request.params.id);
+
+    //   }
+    // }
   ]);
 
   next();

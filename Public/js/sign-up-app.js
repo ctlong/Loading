@@ -10,11 +10,12 @@ $(document).ready(function() {
   User.prototype.signedUp = function() {
     $.ajax({
       type: 'GET',
-      url: 'reserv',
+      url: 'log-in',
       success: function(response) {
-        window.location.href = "/reserv";
+        window.location.href = "/log-in";
+        runError('Your sign up was a success, you may now log in');
       }
-    })
+    });
   };
 
   User.prototype.signUp = function() {
@@ -34,6 +35,8 @@ $(document).ready(function() {
       success: function(response) {
         if(response.ok) {
           this.signedUp();
+        } else if(response.userExists) {
+          runError('Either this username or this email already exists');
         } else {
           console.log(response);
         }
@@ -42,8 +45,10 @@ $(document).ready(function() {
   };
 
   var runError = function(input) {
+    $('#error').remove()
+
     var html = '';
-    html += '<p>';
+    html += '<p id="error">';
     html +=   input;
     html += '</p>';
 
