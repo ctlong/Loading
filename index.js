@@ -22,6 +22,9 @@ server.views({
 
 var plugins = [
   {register: require('./routes/static-pages.js')},
+  {register: require('./routes/sessions.js')},
+  {register: require('./routes/users.js')},
+  {register: require('./routes/auth.js')},
   {
     register: require('yar'),
     options: {
