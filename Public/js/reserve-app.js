@@ -1,6 +1,5 @@
 $(document).ready(function() {
-  var Reservation = function(message,machine,date) {
-    this.message = message;
+  var Reservation = function(machine,date) {
     this.machine = machine;
     this.date = date;
   }
