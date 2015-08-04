@@ -64,8 +64,10 @@ exports.register = function(server,options,next) {
       handler: function(request,reply) {
         var db = request.server.plugins['hapi-mongodb'].db;
         var day = request.query.day;
+        var ObjectId = request.server.plugins['hapi-mongodb'].ObjectID;
         var user_id = request.query.id;
         if(day && user_id) {
+          user_id = ObjectId(user_id);
           db.collection('reservations').find({$and: [{day : day},{user_id : user_id}]}).toArray(function(err,reservations) {
             if(err) {return reply('Internal Mongo Error',err);}
             reply(reservations);
