@@ -4,16 +4,6 @@ $(document).ready(function() {
     this.password = password;
   }
 
-  User.prototype.loggedIn = function() {
-    $.ajax({
-      type: 'GET',
-      url: '/reserve',
-      success: function(response) {
-        window.location.href = "/reserve";
-      }
-    })
-  };
-
   User.prototype.logIn = function() {
     $.ajax({
       context: this,
@@ -28,7 +18,7 @@ $(document).ready(function() {
       dataType: 'json',
       success: function(response) {
         if(response.ok) {
-          this.loggedIn();
+          window.location.href = "/reserve";
         } else if(!response.authorized) {
           runError('Your password does not match your username.');
         } else if(!response.userExists) {
@@ -57,23 +47,11 @@ $(document).ready(function() {
   })
 
   $(document).on('click','#sign-up',function() {
-    $.ajax({
-      type: 'GET',
-      url: 'sign-up',
-      success: function(response) {
-        window.location.href = "/sign-up";
-      }
-    });
+    window.location.href = "/sign-up";
   });
 
   $(document).on('click','#logo',function() {
-    $.ajax({
-      type: 'GET',
-      url: '/',
-      success: function(response) {
-        window.location.href = "/";
-      }
-    });
+    window.location.href = "/";
   });
   
 });

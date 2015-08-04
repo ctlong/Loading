@@ -7,16 +7,6 @@ $(document).ready(function() {
     this.password = password;
   }
 
-  User.prototype.signedUp = function() {
-    $.ajax({
-      type: 'GET',
-      url: 'log-in',
-      success: function(response) {
-        window.location.href = "/log-in";
-      }
-    });
-  };
-
   User.prototype.signUp = function() {
     $.ajax({
       context: this,
@@ -33,7 +23,7 @@ $(document).ready(function() {
       dataType: 'json',
       success: function(response) {
         if(response.ok) {
-          this.signedUp();
+          window.location.href = "/log-in";
         } else if(response.userExists) {
           runError('Either this username or this email already exists');
         } else {

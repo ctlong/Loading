@@ -12,33 +12,25 @@ exports.register = function(server,options,next) {
           var db = request.server.plugins['hapi-mongodb'].db;
           var user = request.payload.user;
           db.collection('users').findOne({username : user.username},function(err,userMongo) {
-            if(err) {reply('Internal Mongo Error ', err);}
-            else {
-              if(userMongo === null) {
-                reply({userExists: false});
-              } else {
-                Bcrypt.compare(user.password, userMongo.password, function(err, same) {
-                  if(!same) {
-                    reply({authorized : false});
-                  } else {
-                    var randomKeyGenerator = function() {
-                      return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
-                    }
-                    var session = {
-                      user_id: userMongo._id,
-                      session_id: randomKeyGenerator()
-                    };
-                    db.collection('sessions').insert(session, function(err, writeResult) {
-                      if(err) {reply('Internal Mongo Error',err);}
-                      else {
-                        request.session.set('hapi_twitter_session', session);
-                        reply(writeResult);
-                      }
-                    });
-                  }
-                });
+            if(err) {return reply('Internal Mongo Error ', err);}
+            if(userMongo === null) {return reply({userExists: false});}
+            Bcrypt.compare(user.password, userMongo.password, function(err, same) {
+              if(!same) {
+                return reply({authorized : false});
               }
-            }
+              var randomKeyGenerator = function() {
+                return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
+              }
+              var session = {
+                user_id: userMongo._id,
+                session_id: randomKeyGenerator()
+              };
+              db.collection('sessions').insert(session, function(err, writeResult) {
+                if(err) {return reply('Internal Mongo Error',err);}
+                request.session.set('hapi_twitter_session', session);
+                reply(writeResult);
+              });
+            });
           });
         },
         validate: {

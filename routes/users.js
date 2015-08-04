@@ -18,23 +18,17 @@ exports.register = function(server,options,next) {
             ]
           };
           db.collection('users').count(uniqUserQuery,function(err,userExist) {
-            if(userExist) {
-              reply({userExists : true});
-            } else {
+            if(userExist) {return reply({userExists : true});}
             //encrypt password
-              Bcrypt.genSalt(10, function(err, salt) {
-                Bcrypt.hash(user.password, salt, function(err, encrypted) {
-                  user.password = encrypted;
-                  db.collection('users').insert(user,function(err,writeResult) {
-                    if(err) {
-                      reply('Internal Mongo Error', err);
-                    } else {
-                      reply(writeResult);
-                    }
-                  });
+            Bcrypt.genSalt(10, function(err, salt) {
+              Bcrypt.hash(user.password, salt, function(err, encrypted) {
+                user.password = encrypted;
+                db.collection('users').insert(user,function(err,writeResult) {
+                  if(err) {return reply('Internal Mongo Error', err);}
+                  reply(writeResult);
                 });
               });
-            }
+            });
           });
         },
         validate: {

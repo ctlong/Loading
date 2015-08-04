@@ -89,16 +89,6 @@ $(document).ready(function() {
     });
   };
 
-  var loggedOut = function() {
-    $.ajax({
-      type: 'GET',
-      url: '/',
-      success: function(response) {
-        window.location.href = "/";
-      }
-    });
-  };
-
   var logOut = function() {
     $.ajax({
       type: 'DELETE',
@@ -106,7 +96,7 @@ $(document).ready(function() {
       dataType: 'json',
       success: function(response) {
         if(response.ok || response.message) {
-          loggedOut();
+          window.location.href = "/";
         } else {
           console.log(response);
         }
@@ -115,13 +105,7 @@ $(document).ready(function() {
   }
 
   var moveOn = function(url) {
-    $.ajax({
-      type: 'GET',
-      url: url,
-      success: function(response) {
-        window.location.href = "/"+url;
-      }
-    });
+    window.location.href = "/"+url;
   };
 
   var runError = function(input,section) {
