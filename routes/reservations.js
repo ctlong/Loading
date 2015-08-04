@@ -48,8 +48,8 @@ exports.register = function(server,options,next) {
           payload: {
             reservation: {
               machine: Joi.number().min(1).max(5).required(),
-              day: Joi.string().min(5).max(20).required(),
-              hour: Joi.string().min(2).max(2).required()
+              day: Joi.string().min(1).max(20).required(),
+              hour: Joi.string().min(1).max(2).required()
             }
           }
         }

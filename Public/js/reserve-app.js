@@ -1,28 +1,59 @@
 $(document).ready(function() {
-  var Reservation = function(machine,date) {
-    this.machine = machine;
-    this.date = date;
+  var Reservation = function() {
+    this.machine;
+    this.day;
+    this.hour;
   }
+
+  Reservation.prototype.makeReservation = function() {
+    $.ajax({
+      context: this,
+      type: 'POST',
+      url: 'reservations',
+      data: {
+        reservation: {
+          machine: this.machine,
+          day: this.day,
+          hour: this.hour
+        }
+      },
+      dataType: 'json',
+      success: function(response) {
+        if(response.ok) {
+          moveOn('reserve');
+        } else if(!response.authenticated) {
+          logOut();
+        } else if(response.reservationExists) {
+          console.log('That spot is already reserved');
+        } else {
+          console.log(response);
+        }
+      }
+    });
+  };
 
   var fillTable = function(response,table,hour) {
     for(var a=hour;a<24;a++) {
       var html = '';
       html += '<tr>';
       html +=   '<td>';
-      html +=     a + ':00';
+      if(a<10) {html += '0' + a + ':00';}
+      else{html +=     a + ':00';}
       html +=   '</td>';
       for(var b=1;b<6;b++) {
-        var stylish = '<td style="background-color:lightgrey;">';
+        var opener = '<td><button class="btn btn-success res">';
         var input = 'Open';
+        var closer = '</button></td>'
         for(var c=0;c<response.length;c++) {
           if(response[c].machine == b && response[c].hour == a) {
-            input = response[c].user;
-            stylish = '<td>';
+            opener = '<td style="background-color:orange;font-size:18px;color:white;padding-top:8px;">';
+            input =   response[c].user;
+            closer = '</td>';
           }
         }
-        html += stylish;
+        html += opener;
         html +=   input;
-        html += '</td>';
+        html += closer;
       }
       html += '</tr>'
       $('#table'+table).append(html);
@@ -58,27 +89,7 @@ $(document).ready(function() {
     });
   };
 
-  var moveOn = function(url) {
-    $.ajax({
-      type: 'GET',
-      url: url,
-      success: function(response) {
-        window.location.href = "/"+url;
-      }
-    });
-  };
-
-  $(document).on('click','#sign-up',function() {
-    $.ajax({
-      type: 'GET',
-      url: 'sign-up',
-      success: function(response) {
-        window.location.href = "/sign-up";
-      }
-    });
-  });
-
-  $(document).on('click','#log-out',function() {
+  var logOut = function() {
     $.ajax({
       type: 'DELETE',
       url: 'sessions',
@@ -91,6 +102,64 @@ $(document).ready(function() {
         }
       }
     });
+  }
+
+  var moveOn = function(url) {
+    $.ajax({
+      type: 'GET',
+      url: url,
+      success: function(response) {
+        window.location.href = "/"+url;
+      }
+    });
+  };
+
+  var runError = function(input) {
+    $('#error').remove()
+    var html = '';
+    html += '<p id="error">';
+    html +=   input;
+    html += '</p>';
+    $('section')[0].append(html)
+  }
+
+  Reservation.prototype.getValues = function(button,table) {
+    var hour;
+    var machine;
+    var ind;
+    for(var a=1;a<24;a++) {
+      if($(button).parent().parent()[0] == $(table+' tr')[a]) {
+        ind = a;
+      }
+    }
+    $(table).find('tr').each(function (i, el) {
+      if(i == ind) {
+        hour = $($(this).find('td')[0]).text().slice(0,2);
+        var tds = $(this).find('td').each(function(index,elem){
+          if(elem == $(button).parent()[0]) {
+            machine = index;
+          }
+        });
+      }
+    });
+    this.machine = machine;
+    this.hour = hour;
+  }
+
+  $(document).on('click','.res',function() {
+    var newReservation = new Reservation();
+    if($(this).parent().parent().parent().parent().attr('id') == 'table1') {
+      newReservation.day = today.slice(0,15).replace(' ','-').replace(' ','-').replace(' ','-');
+      newReservation.getValues(this,'#table1');
+    } else {
+      newReservation.day = tmrw.replace(' ','-').replace(' ','-').replace(' ','-');
+      newReservation.getValues(this,'#table2');
+    }
+    newReservation.makeReservation();
+  });
+
+  $(document).on('click','#log-out',function() {
+    logOut();
   });
 
   $(document).on('click','a',function() {
@@ -106,19 +175,13 @@ $(document).ready(function() {
   });
 
   $(document).on('click','#logo',function() {
-    $.ajax({
-      type: 'GET',
-      url: 'reserve',
-      success: function(response) {
-        window.location.href = "/reserve";
-      }
-    });
+    moveOn('reserve');
   });
 
   //initiate dates on tables and fill tables
-  today = new Date().toString();
+  var today = new Date().toString();
   $('#today').text(today.slice(0,15));
-  tmrw = new Date(today.slice(4,7) + ' 0' + (parseInt(today.slice(8,10))+1) + ' ' + today.slice(12,15)).toString().slice(0,15);
+  var tmrw = new Date(today.slice(4,7) + ' 0' + (parseInt(today.slice(8,10))+1) + ' ' + today.slice(12,15)).toString().slice(0,15);
   $('#tmrw').text(tmrw);
   getReservationData(today.slice(0,15),1);
   getReservationData(tmrw,2);
