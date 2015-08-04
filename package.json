@@ -20,5 +20,14 @@
   "bugs": {
     "url": "https://github.com/WDI-HK-8/Loading/issues"
   },
-  "homepage": "https://github.com/WDI-HK-8/Loading#readme"
+  "homepage": "https://github.com/WDI-HK-8/Loading#readme",
+  "dependencies": {
+    "bcrypt": "^0.8.4",
+    "handlebars": "^3.0.3",
+    "hapi": "^8.8.1",
+    "hapi-mongodb": "^3.0.0",
+    "joi": "^6.6.1",
+    "path": "^0.11.14",
+    "yar": "^3.0.3"
+  }
 }

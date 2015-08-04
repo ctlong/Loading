@@ -1,0 +1,24 @@
+{
+  "name": "Loading",
+  "main": "index.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/WDI-HK-8/Loading",
+  "description": "A website that allows users to keep track of laundry use",
+  "keywords": [
+    "wdi",
+    "laundry",
+    "backend",
+    "frontend"
+  ],
+  "authors": [
+    "Carson Long"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

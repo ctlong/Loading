@@ -1,0 +1,51 @@
+/*don't change below*/
+.nav {
+  background-color: black;
+  color: white;
+}
+
+nav > h2 {
+  float: left;
+  padding: 1px 1px 2px 10px;
+  margin: 7px 0px;
+}
+
+nav > h3 {
+  float: right;
+  padding: 0px;
+  margin: 0px;
+}
+
+nav > h3 > .btn-default {
+  color: white;
+  font-size: 17px;
+  background-color: black;
+  padding: 0px 14px;
+  margin: 0px;
+  border: 0px;
+  height: 52px;
+  border-radius: 0px;
+}
+/*don't change above*/
+
+section {
+  margin-top: 60px;
+}
+
+section > p {
+  text-align: center;
+  margin-top: 30px;
+}
+
+section > p:nth-child(3) {
+  margin-right: 40px;
+}
+
+section > p:nth-child(4) {
+  margin-right: 40px;
+}
+
+section > p > span{
+  margin-right: 15px;
+  font-size: 20px;
+}
