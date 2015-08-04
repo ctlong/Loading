@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loading</title>
+  <link rel="stylesheet" type="text/css" href="public/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="public/css/profile.css">
+  <script type="text/javascript" src="public/bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="public/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="public/js/profile-app.js"></script>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="fluid-container">
+      <nav class="nav">
+        <h2 id="logo">L<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>ading</h2>
+        <h3><button class="btn btn-default" id="log-out">Log Out</button></h3>
+        <h3>
+          <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Options<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#">Profile</a></li>
+              <li><a href="#">Reserve</a></li>
+              <li><a href="#">Chart</a></li>
+              <li><a href="#">Forum</a></li>
+            </ul>
+          </div>
+        </h3>
+      </nav>
+      <section>
+        <h2>Please log in again to verify your identity</h2>
+        <p><span>Username</span><input type="text" placeholder="username"></p>
+        <p><span>Password</span><input type="text" placeholder="password"></p>
+        <p><button class="btn btn-default" id="log-in">Log In</button></p>
+      </section>
+      <section>
+        <h3 id="reservations"></h3>
+        <table class="table table-striped" id="table2">
+          <tr>
+            <td>Time</td>
+            <td>Machine</td>
+            <td>Day</td>
+          </tr>
+        </table>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

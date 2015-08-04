@@ -58,6 +58,15 @@ exports.register = function(server,options,next) {
           });
         }
       }
+    },
+    {
+      method: 'GET',
+      path: '/sessions/authorized',
+      handler: function(request,reply) {
+        Auth.authorized(request,function(result) {
+          reply(result);
+        })
+      }
     }
   ]);
 

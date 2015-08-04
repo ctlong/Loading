@@ -36,6 +36,13 @@ exports.register = function(server,options,next) {
       handler: function(request,reply) {
         reply.view('reserve');
       }
+    },
+    {
+      method: 'GET',
+      path: '/profile',
+      handler: function(request,reply) {
+        reply.view('profile');
+      }
     }
   ]);
 

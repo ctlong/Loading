@@ -55,11 +55,24 @@ nav > h3 > .btn-group > .dropdown-menu {
 
 section {
   text-align: center;
-  margin: 80px 5px;
+  margin: 60px 5px;
 }
 
 section:nth-child(2) {
   margin-top: 50px;
+}
+
+section:nth-child(3) {
+  display: none;
+}
+
+section > p {
+  margin-top: 30px;
+}
+
+section > p > span{
+  margin-right: 15px;
+  font-size: 20px;
 }
 
 .table-striped > tbody > tr:first-child {
@@ -67,7 +80,7 @@ section:nth-child(2) {
   font-size: 15px;
 }
 
-.table-striped > tbody > tr > td:first-child {
+.table-striped > tbody > tr > td:nth-child(4) {
   font-weight: bold;
   font-size: 15px;
 }
