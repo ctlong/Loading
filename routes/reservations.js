@@ -11,23 +11,22 @@ exports.register = function(server,options,next) {
         handler: function(request,reply) {
           var db = request.server.plugins['hapi-mongodb'].db;
           var reservation = request.payload.reservation;
-          var uniqReservationQuery = {
-            $and: [
-              {machine: reservation.machine},
-              {day: reservation.day},
-              {hour: reservation.hour}
-            ]
-          };
           Auth.authenticated(request, function(result) {
             if(!result.authenticated) {
               reply({authenticated : false});
             } else {
-              db.collection('reservations').count(uniqReservationQuery, function(err,reservationExists) {
+              reservation.user_id = result.user_id;
+              var uniqReservationQuery = {
+                $and: [
+                  {user_id: reservation.user_id},
+                  {day: reservation.day}
+                ]
+              };
+              db.collection('reservations').count(uniqReservationQuery, function(err,reservationLimit) {
                 if(err) {reply('Internal Mongo Error',err);}
                 else {
-                  if(reservationExists) {reply({reservationExists : true});}
+                  if(reservationLimit > 1) {reply({reservationLimit : true});}
                   else {
-                    reservation.user_id = result.user_id;
                     db.collection('users').findOne({_id : result.user_id},function(err,user) {
                       if(err) {reply('Internal Mongo Error',err);}
                       else {

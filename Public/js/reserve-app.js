@@ -21,10 +21,14 @@ $(document).ready(function() {
       success: function(response) {
         if(response.ok) {
           moveOn('reserve');
+        } else if(response.reservationLimit) {
+          if(new Date(this.day).toString() == new Date(today.slice(0,15)).toString()) {
+            runError('You cannot book more than two spots per day',0);
+          } else {
+            runError('You cannot book more than two spots per day',1);
+          }
         } else if(!response.authenticated) {
           logOut();
-        } else if(response.reservationExists) {
-          console.log('That spot is already reserved');
         } else {
           console.log(response);
         }
@@ -114,13 +118,13 @@ $(document).ready(function() {
     });
   };
 
-  var runError = function(input) {
+  var runError = function(input,section) {
     $('#error').remove()
     var html = '';
     html += '<p id="error">';
     html +=   input;
     html += '</p>';
-    $('section')[0].append(html)
+    $($('section')[section]).prepend(html)
   }
 
   Reservation.prototype.getValues = function(button,table) {

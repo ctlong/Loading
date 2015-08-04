@@ -26,16 +26,16 @@ nav > h3 > .btn-default {
   height: 52px;
   border-radius: 0px;
 }
-/*don't change above*/
-
-section {
-  margin-top: 60px;
-}
 
 #error {
   margin: 0px;
   padding: 0px;
   color: red;
+}
+/*don't change above*/
+
+section {
+  margin-top: 60px;
 }
 
 section > p {
