@@ -44,8 +44,8 @@ exports.register = function(server,options,next) {
         validate: {
           payload: {
             user: {
-              username: Joi.string().min(5).max(20).required(),
-              password: Joi.string().min(5).max(20).required()
+              username: Joi.string().min(1).max(20).required(),
+              password: Joi.string().min(1).max(20).required()
             }
           }
         }
