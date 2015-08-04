@@ -21,6 +21,12 @@ $(document).ready(function() {
       success: function(response) {
         if(response.ok) {
           moveOn('reserve');
+        } else if(response.reservationExists) {
+          if(new Date(this.day).toString() == new Date(today.slice(0,15)).toString()) {
+            runError('This reservation is taken',0);
+          } else {
+            runError('This reservation is taken',1);
+          }
         } else if(response.reservationLimit) {
           if(new Date(this.day).toString() == new Date(today.slice(0,15)).toString()) {
             runError('You cannot book more than two spots per day',0);
@@ -71,7 +77,7 @@ $(document).ready(function() {
 
     $.ajax({
       type: 'GET',
-      url: 'reservations/day=' + date,
+      url: 'reservations?day=' + date,
       dataType: 'json',
       success: function(response) {
         if(table == 1) {

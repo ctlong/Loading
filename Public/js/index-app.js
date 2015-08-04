@@ -33,7 +33,7 @@ $(document).ready(function() {
 
     $.ajax({
       type: 'GET',
-      url: 'reservations/day=' + date,
+      url: 'reservations?day=' + date,
       dataType: 'json',
       success: function(response) {
         fillTable(response);

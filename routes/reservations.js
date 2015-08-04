@@ -18,28 +18,39 @@ exports.register = function(server,options,next) {
               reservation.user_id = result.user_id;
               var uniqReservationQuery = {
                 $and: [
-                  {user_id: reservation.user_id},
-                  {day: reservation.day}
+                  {day: reservation.day},
+                  {hour: reservation.hour},
+                  {machine: reservation.machine}
                 ]
               };
-              db.collection('reservations').count(uniqReservationQuery, function(err,reservationLimit) {
-                if(err) {reply('Internal Mongo Error',err);}
-                else {
-                  if(reservationLimit > 1) {reply({reservationLimit : true});}
+              db.collection('reservations').count(uniqReservationQuery,function(err,reservationExists) {
+                if(err) {return reply('Internal Mongo Error',err);}
+                if(reservationExists) {return reply({reservationExists : true});}
+                var withinLimitQuery = {
+                  $and: [
+                    {user_id: reservation.user_id},
+                    {day: reservation.day}
+                  ]
+                };
+                db.collection('reservations').count(withinLimitQuery, function(err,reservationLimit) {
+                  if(err) {reply('Internal Mongo Error',err);}
                   else {
-                    db.collection('users').findOne({_id : result.user_id},function(err,user) {
-                      if(err) {reply('Internal Mongo Error',err);}
-                      else {
-                        reservation.user = user.name;
-                        db.collection('reservations').insert(reservation,function(err,writeResult) {
-                          if(err) {reply('Internal Mongo Error',err);}
-                          else {reply(writeResult);}
-                        });
-                      }
-                    });
+                    if(reservationLimit > 1) {reply({reservationLimit : true});}
+                    else {
+                      db.collection('users').findOne({_id : result.user_id},function(err,user) {
+                        if(err) {reply('Internal Mongo Error',err);}
+                        else {
+                          reservation.user = user.name;
+                          db.collection('reservations').insert(reservation,function(err,writeResult) {
+                            if(err) {reply('Internal Mongo Error',err);}
+                            else {reply(writeResult);}
+                          });
+                        }
+                      });
+                    }
                   }
-                }
-              })
+                });
+              });
             }
           });
         },
@@ -56,14 +67,22 @@ exports.register = function(server,options,next) {
     },
     {
       method: 'GET',
-      path: '/reservations/day={day}',
+      path: '/reservations',
       handler: function(request,reply) {
         var db = request.server.plugins['hapi-mongodb'].db;
-        var day = encodeURIComponent(request.params.day);
-        db.collection('reservations').find({day : day}).toArray(function(err,reservations) {
-          if(err) {reply('Internal Mongo Error',err);}
-          else {reply(reservations);}
-        });
+        var day = request.query.day;
+        if(day) {
+          db.collection('reservations').find({day : day}).toArray(function(err,reservations) {
+            if(err) {reply('Internal Mongo Error',err);}
+            else {reply(reservations);}
+          });
+        }
+        else {
+          db.collection('reservations').find({}).toArray(function(err,reservations) {
+            if(err) {reply('Internal Mongo Error',err);}
+            else {reply(reservations);}
+          });
+        }
       }
     }
   ]);
