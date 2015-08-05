@@ -64,6 +64,55 @@ exports.register = function(server,options,next) {
           });
         });
       }
+    },
+    {
+      method: 'PUT',
+      path: '/users',
+      config: {
+        handler: function(request,reply) {
+          Auth.authenticated(request,function(result) {
+            if(!result.authenticated) {return reply(result);}
+            var db = request.server.plugins['hapi-mongodb'].db;
+            var oldPassword = request.payload.updatedUser.oldPassword;
+            var newPassword = request.payload.updatedUser.newPassword;
+            var email = request.payload.updatedUser.email;
+            if(!email) {
+              db.collection('users').findOne({_id : result.user_id},function(err,userMongo) {
+                if(err) {return reply('Internal Mongo Error ', err);}
+                if(userMongo === null) {return reply({userExists: false});}
+                Bcrypt.compare(oldPassword, userMongo.password, function(err, same) {
+                  if(err) {return reply('Bcrypt error',err)}
+                  if(!same) {return reply({authorized : false});}
+                  Bcrypt.genSalt(10, function(err, salt) {
+                    if(err) {return reply('Internal Bcrypt Error',err);}
+                    Bcrypt.hash(newPassword, salt, function(err, encrypted) {
+                      if(err) {return reply('Internal Bcrypt Error',err);}
+                      db.collection('users').update({_id : result.user_id},{$set: {password : encrypted}},function(err,writeResult) {
+                        if(err) {return reply(err);}
+                        reply(writeResult);
+                      });
+                    });
+                  });
+                });
+              });
+            } else {
+              db.collection('users').update({_id : result.user_id},{$set: {email : email}},function(err,writeResult) {
+                if(err) {return reply(err);}
+                reply(writeResult);
+              });
+            }
+          });
+        },
+        validate: {
+          payload: {
+            updatedUser: {
+              oldPassword: Joi.string().min(5).max(20).optional(),
+              newPassword: Joi.string().min(5).max(20).optional(),
+              email: Joi.string().email().max(50).optional()
+            }
+          }
+        }
+      }
     }
   ]);
 
