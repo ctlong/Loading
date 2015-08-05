@@ -7,17 +7,6 @@ $(document).ready(function() {
     this.password = password;
   }
 
-  User.prototype.signedUp = function() {
-    $.ajax({
-      type: 'GET',
-      url: 'log-in',
-      success: function(response) {
-        window.location.href = "/log-in";
-        runError('Your sign up was a success, you may now log in');
-      }
-    });
-  };
-
   User.prototype.signUp = function() {
     $.ajax({
       context: this,
@@ -31,10 +20,10 @@ $(document).ready(function() {
           password: this.password
         }
       },
-      datatype: 'json',
+      dataType: 'json',
       success: function(response) {
         if(response.ok) {
-          this.signedUp();
+          window.location.href = "/log-in";
         } else if(response.userExists) {
           runError('Either this username or this email already exists');
         } else {
@@ -52,7 +41,7 @@ $(document).ready(function() {
     html +=   input;
     html += '</p>';
 
-    $('section').prepend(html)
+    $('section').append(html)
   }
 
   $(document).on('click','#sign-up',function() {

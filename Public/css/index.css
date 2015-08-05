@@ -10,6 +10,10 @@ nav > h2 {
   margin: 7px 0px;
 }
 
+nav > h2 > .glyphicon-refresh {
+  font-size: 20px;
+}
+
 nav > h3 {
   float: right;
   padding: 0px;
@@ -28,6 +32,16 @@ nav > h3 > .btn-default {
 }
 /*don't change above*/
 
-#date {
+section {
   text-align: center;
+}
+
+.table-bordered > tbody > tr:first-child {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.table-bordered > tbody > tr > td:first-child {
+  font-weight: bold;
+  font-size: 15px;
 }
