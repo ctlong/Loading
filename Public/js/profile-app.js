@@ -121,7 +121,7 @@ $(document).ready(function() {
       html +=   '<td>';
       html +=     day;
       html +=   '</td>';
-      html +=   '<td><button class="btn btn-success">Remove</button></td>';
+      html +=   '<td><button class="btn btn-success" class="remove">Remove</button></td>';
       html += '</tr>'
       $('#table').append(html);
     }
@@ -155,6 +155,24 @@ $(document).ready(function() {
     $($('section')[section]).prepend(html)
   };
 
+  $(document).on('click','.remove',function() {
+    for(var a=1;a<24;a++) {
+      if($(button).parent().parent()[0] == $(table+' tr')[a]) {
+        ind = a;
+      }
+    }
+    $(table).find('tr').each(function (i, el) {
+      if(i == ind) {
+        hour = $($(this).find('td')[0]).text().slice(0,2);
+        var tds = $(this).find('td').each(function(index,elem){
+          if(elem == $(button).parent()[0]) {
+            machine = index;
+          }
+        });
+      }
+    });
+  })
+
   $(document).on('click','#log-in',function() {
     var curUser = new User();
     curUser.getUserInfo($('input')[0].value,$('input')[1].value);
@@ -165,15 +183,8 @@ $(document).ready(function() {
   });
 
   $(document).on('click','a',function() {
-    if(this == $('a')[0]) {
-      moveOn('profile');
-    } else if(this == $('a')[1]) {
-      moveOn('reserve');
-    } else if(this == $('a')[2]) {
-      moveOn('chart');
-    } else {
-      moveOn('forum');
-    }
+    url = $(this).text().toLowerCase();
+    moveOn(url);
   });
 
   $(document).on('click','#logo',function() {
