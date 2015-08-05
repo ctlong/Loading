@@ -85,6 +85,28 @@ exports.register = function(server,options,next) {
           });
         }
       }
+    },
+    {
+      method: 'DELETE',
+      path: '/reservations',
+      handler: function(request,reply) {
+        Auth.authenticated(request,function(result) {
+          if(!result.authenticated) {return reply(result);}
+          var db = request.server.plugins['hapi-mongodb'].db;
+          var reservation = request.payload.reservation;
+          var removeReservationQuery = {
+            $and: [
+              {day : reservation.day},
+              {hour : reservation.hour},
+              {machine : parseInt(reservation.machine)}
+            ]
+          };
+          db.collection('reservations').remove(removeReservationQuery,function(err,writeResult) {
+            if(err) {return reply('Internal Mongo Error',err);}
+            reply(writeResult);
+          });
+        });
+      }
     }
   ]);
 

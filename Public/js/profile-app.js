@@ -121,10 +121,32 @@ $(document).ready(function() {
       html +=   '<td>';
       html +=     day;
       html +=   '</td>';
-      html +=   '<td><button class="btn btn-success" class="remove">Remove</button></td>';
+      html +=   '<td><button class="btn btn-success remove">Remove</button></td>';
       html += '</tr>'
       $('#table').append(html);
     }
+  };
+
+  Reservation.prototype.runRemove = function(button) {
+    $.ajax({
+      context: this,
+      type: 'DELETE',
+      url: 'reservations',
+      data: {
+        reservation: {
+          machine: this.machine,
+          hour: this.hour,
+          day: this.day
+        }
+      },
+      dataType: 'json',
+      success: function(response) {
+        console.log(response);
+        if(response.ok) {
+          $(button).parent().parent().remove();
+        }
+      }
+    });
   };
 
   var logOut = function() {
@@ -156,21 +178,25 @@ $(document).ready(function() {
   };
 
   $(document).on('click','.remove',function() {
-    for(var a=1;a<24;a++) {
-      if($(button).parent().parent()[0] == $(table+' tr')[a]) {
+    var removeReservation = new Reservation();
+    var ind;
+    for(var a=1;a<=4;a++) {
+      if($(this).parent().parent()[0] == $('#table tr')[a]) {
         ind = a;
       }
     }
-    $(table).find('tr').each(function (i, el) {
+    $('#table').find('tr').each(function (i, el) {
       if(i == ind) {
-        hour = $($(this).find('td')[0]).text().slice(0,2);
-        var tds = $(this).find('td').each(function(index,elem){
-          if(elem == $(button).parent()[0]) {
-            machine = index;
-          }
-        });
+        removeReservation.hour = $($(this).find('td')[0]).text().slice(0,2);
+        removeReservation.machine = parseInt($($(this).find('td')[1]).text());
+        if($($(this).find('td')[2]).text() == 'Today') {
+          removeReservation.day = today.slice(0,15).replace(' ','-').replace(' ','-').replace(' ','-');
+        } else {
+          removeReservation.day = tmrw.replace(' ','-').replace(' ','-').replace(' ','-');
+        }
       }
     });
+    removeReservation.runRemove(this);
   })
 
   $(document).on('click','#log-in',function() {
