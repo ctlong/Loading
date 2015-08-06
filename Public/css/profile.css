@@ -36,6 +36,10 @@ nav > h3 > .btn-default {
   padding: 0px;
   color: red;
 }
+
+.modal {
+  top: 100px;
+}
 /*don't change above*/
 
 nav > h3 > .btn-group > .btn-default {

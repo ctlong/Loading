@@ -81,7 +81,7 @@ exports.register = function(server,options,next) {
         else {
           db.collection('reservations').find({}).toArray(function(err,reservations) {
             if(err) {return reply('Internal Mongo Error',err);}
-            reply(reservations);
+            reply({data : reservations});
           });
         }
       }

@@ -1,18 +1,52 @@
 $(document).ready(function() {
+  var User = function(id) {
+    this.id = id;
+  }
+
   var Post = function() {
     this.type;
     this.message;
     this.user;
     this.date = new Date().toString().slice(0,21);
+    this.id;
+    this.user_id;
   }
+
+  Post.prototype.removePost = function(button) {
+    $.ajax({
+      context: this,
+      type: 'DELETE',
+      url: 'posts',
+      data: {
+        post: {
+          id: this.id
+        }
+      },
+      dataType: 'json',
+      success: function(response) {
+        if(response.ok) {
+          $(button).parent().remove();
+        } else if(response.authenticated == false) {
+          logOut();
+        } else if(response.usersPost == false) {
+          logOut();
+        } else {
+          console.log(response);
+        }
+      },
+      error: function(response) {
+        console.log(response);
+      }
+    })
+  };
 
   Post.prototype.makePost = function() {
     $.ajax({
       context: this,
       type: 'POST',
-      url: 'reservations',
+      url: 'posts',
       data: {
-        reservation: {
+        post: {
           type: this.type,
           message: this.message,
           date: this.date
@@ -21,70 +55,64 @@ $(document).ready(function() {
       dataType: 'json',
       success: function(response) {
         if(response.ok) {
-          moveOn('reserve');
-        } else if(response.reservationExists) {
-          if(new Date(this.day).toString() == new Date(today.slice(0,15)).toString()) {
-            runError('This reservation is taken',0);
-          } else {
-            runError('This reservation is taken',1);
+          $('article').remove();
+          getPosts();
+          $('#add-post').modal('hide');
+        } else if(response.userExists == false) {
+          logOut();
+        } else if(response.authenticated == false) {
+          logOut();
+        } else {
+          console.log(response);
+        }
+      },
+      error: function(response) {
+        console.log(response);
+        runError('Your title and/or message are not within the required character limits')
+      }
+    });
+  };
+
+  Post.prototype.insert = function(user) {
+    var html = '';
+    html += '<article>';
+    html += '<p class="name">' + this.user + '<span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></p>';
+    html += '<p class="date">' + this.date + '</p>';
+    if(this.user_id == user.id) {
+      html += '<button class="btn btn-default remove" data-id="' + this.id + '">Delete</button>';
+    }
+    html += '<h5 class="title">' + this.type + '</h5>';
+    html += '<p class="message">' + this.message + '</p>';
+    html += '</article>';
+    $('#forum').append(html);
+  };
+
+  var getPosts = function() {
+    $.ajax({
+      type: 'GET',
+      url: 'posts',
+      dataType: 'json',
+      success: function(response) {
+        if(response.data) {
+          var posts = response.data.reverse();
+          var user = new User(response.user);
+          for(var a in posts) {
+            var post = new Post();
+            post.date = posts[a].date;
+            post.message = posts[a].message;
+            post.user_id = posts[a].user_id;
+            post.user = posts[a].user;
+            post.id = posts[a]._id;
+            post.type = posts[a].type;
+            post.insert(user);
           }
-        } else if(response.reservationLimit) {
-          if(new Date(this.day).toString() == new Date(today.slice(0,15)).toString()) {
-            runError('You have already used your two reservations today',0);
-          } else {
-            runError('You cannot book more than two spots per day',1);
+          if($('article').length == 0) {
+            $('#forum').append('<h4>No Posts</h4>');
           }
         } else if(!response.authenticated) {
           logOut();
         } else {
           console.log(response);
-        }
-      }
-    });
-  };
-
-  var fillTable = function(response,table,hour) {
-    for(var a=hour;a<24;a++) {
-      var html = '';
-      html += '<tr data-row="'+a+'">';
-      html +=   '<td>';
-      if(a<10) {html += '0' + a + ':00';}
-      else{html +=     a + ':00';}
-      html +=   '</td>';
-      for(var b=1;b<6;b++) {
-        var opener = '<td><button class="btn btn-success res">';
-        var input = 'Open';
-        var closer = '</button></td>'
-        for(var c=0;c<response.length;c++) {
-          if(response[c].machine == b && response[c].hour == a) {
-            opener = '<td style="background-color:orange;font-size:18px;color:white;padding-top:8px;">';
-            input =   response[c].user;
-            closer = '</td>';
-          }
-        }
-        html += opener;
-        html +=   input;
-        html += closer;
-      }
-      html += '</tr>'
-      $('#table'+table).append(html);
-    }
-  };
-
-  var getReservationData = function(date,table) {
-    date = date.replace(' ','-');
-    date = date.replace(' ','-');
-    date = date.replace(' ','-');
-
-    $.ajax({
-      type: 'GET',
-      url: 'reservations?day=' + date,
-      dataType: 'json',
-      success: function(response) {
-        if(table == 1) {
-          fillTable(response,table,parseInt(new Date().toString().slice(16,18)));
-        } else {
-          fillTable(response,table,0);
         }
       }
     });
@@ -109,48 +137,26 @@ $(document).ready(function() {
     window.location.href = "/"+url;
   };
 
-  var runError = function(input,section) {
+  var runError = function(input) {
     $('#error').remove()
     var html = '';
     html += '<p id="error">';
     html +=   input;
     html += '</p>';
-    $($('section')[section]).prepend(html)
+    $('.modal-body').prepend(html)
   }
 
-  Reservation.prototype.getValues = function(button,table) {
-    var hour;
-    var machine;
-    var ind;
-    for(var a=1;a<24;a++) {
-      if($(button).parent().parent()[0] == $(table+' tr')[a]) {
-        ind = a;
-      }
-    }
-    $(table).find('tr').each(function (i, el) {
-      if(i == ind) {
-        hour = $($(this).find('td')[0]).text().slice(0,2);
-        var tds = $(this).find('td').each(function(index,elem){
-          if(elem == $(button).parent()[0]) {
-            machine = index;
-          }
-        });
-      }
-    });
-    this.machine = machine;
-    this.hour = hour;
-  }
+  $(document).on('click','.remove',function() {
+    var post = new Post();
+    post.id = $(this).attr('data-id');
+    post.removePost(this);
+  });
 
-  $(document).on('click','.res',function() {
-    var newReservation = new Reservation();
-    if($(this).parent().parent().parent().parent().attr('id') == 'table1') {
-      newReservation.day = today.slice(0,15).replace(' ','-').replace(' ','-').replace(' ','-');
-      newReservation.getValues(this,'#table1');
-    } else {
-      newReservation.day = tmrw.replace(' ','-').replace(' ','-').replace(' ','-');
-      newReservation.getValues(this,'#table2');
-    }
-    newReservation.makeReservation();
+  $(document).on('click','#save',function() {
+    var newPost = new Post();
+    newPost.type = $('#add-post input')[0].value;
+    newPost.message = $('#add-post input')[1].value;
+    newPost.makePost();
   });
 
   $(document).on('click','#log-out',function() {
@@ -168,9 +174,5 @@ $(document).ready(function() {
 
   //initiate dates on tables and fill tables
   var today = new Date().toString();
-  $('#today').text(today.slice(0,15));
-  var tmrw = new Date(today.slice(4,7) + ' 0' + (parseInt(today.slice(8,10))+1) + ' ' + today.slice(12,15)).toString().slice(0,15);
-  $('#tmrw').text(tmrw);
-  getReservationData(today.slice(0,15),1);
-  getReservationData(tmrw,2);
+  getPosts();
 });

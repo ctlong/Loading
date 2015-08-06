@@ -42,6 +42,29 @@ $(document).ready(function() {
     });
   };
 
+  Reservation.prototype.getValues = function(button,table) {
+    var hour;
+    var machine;
+    var ind;
+    for(var a=1;a<24;a++) {
+      if($(button).parent().parent()[0] == $(table+' tr')[a]) {
+        ind = a;
+      }
+    }
+    $(table).find('tr').each(function (i, el) {
+      if(i == ind) {
+        hour = $($(this).find('td')[0]).text().slice(0,2);
+        var tds = $(this).find('td').each(function(index,elem){
+          if(elem == $(button).parent()[0]) {
+            machine = index;
+          }
+        });
+      }
+    });
+    this.machine = machine;
+    this.hour = hour;
+  };
+
   var fillTable = function(response,table,hour) {
     for(var a=hour;a<24;a++) {
       var html = '';
@@ -102,7 +125,7 @@ $(document).ready(function() {
         }
       }
     });
-  }
+  };
 
   var moveOn = function(url) {
     window.location.href = "/"+url;
@@ -115,30 +138,7 @@ $(document).ready(function() {
     html +=   input;
     html += '</p>';
     $($('section')[section]).prepend(html)
-  }
-
-  Reservation.prototype.getValues = function(button,table) {
-    var hour;
-    var machine;
-    var ind;
-    for(var a=1;a<24;a++) {
-      if($(button).parent().parent()[0] == $(table+' tr')[a]) {
-        ind = a;
-      }
-    }
-    $(table).find('tr').each(function (i, el) {
-      if(i == ind) {
-        hour = $($(this).find('td')[0]).text().slice(0,2);
-        var tds = $(this).find('td').each(function(index,elem){
-          if(elem == $(button).parent()[0]) {
-            machine = index;
-          }
-        });
-      }
-    });
-    this.machine = machine;
-    this.hour = hour;
-  }
+  };
 
   $(document).on('click','.res',function() {
     var newReservation = new Reservation();

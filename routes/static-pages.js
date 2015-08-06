@@ -50,6 +50,13 @@ exports.register = function(server,options,next) {
       handler: function(request,reply) {
         reply.view('forum');
       }
+    },
+    {
+      method: 'GET',
+      path: '/chart',
+      handler: function(request,reply) {
+        reply.view('chart');
+      }
     }
   ]);
 
