@@ -12,7 +12,18 @@ exports.register = function(server,options,next) {
       path: '/public/{path*}',
       handler: {
         directory: {
-          path: 'public'
+          path: 'public',
+          listing: true
+        }
+      }
+    },
+    {
+      method: 'GET',
+      path: '/bower_components/{path*}',
+      handler: {
+        directory: {
+          path: 'bower_components',
+          listing: true
         }
       }
     },
