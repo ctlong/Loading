@@ -3,10 +3,10 @@
 <head>
   <title>Loading</title>
   <link rel="stylesheet" type="text/css" href="public/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="public/css/reserve.css">
+  <link rel="stylesheet" type="text/css" href="public/css/forum.css">
   <script type="text/javascript" src="public/bower_components/jquery/dist/jquery.min.js"></script>
   <script type="text/javascript" src="public/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="public/js/reserve-app.js"></script>
+  <script type="text/javascript" src="public/js/forum-app.js"></script>
 </head>
 <body>
   <div class="wrapper">
@@ -27,33 +27,26 @@
           </div>
         </h3>
       </nav>
-      <h2>Make a reservation (max: two per day)</h2>
       <section>
-        <h3 id="today"></h3>
-        <table class="table table-striped" id="table1">
-          <tr>
-            <td>Time</td>
-            <td>Machine 1</td>
-            <td>Machine 2</td>
-            <td>Machine 3</td>
-            <td>Machine 4</td>
-            <td>Machine 5</td>
-          </tr>
-        </table>
+        <h2>Forum</h2>
+        <button class="btn btn-success" id="post">Post</button>
       </section>
-      <section>
-        <h3 id="tmrw"></h3>
-        <table class="table table-striped" id="table2">
-          <tr>
-            <td>Time</td>
-            <td>Machine 1</td>
-            <td>Machine 2</td>
-            <td>Machine 3</td>
-            <td>Machine 4</td>
-            <td>Machine 5</td>
-          </tr>
-        </table>
-      </section>
+      <div class="modal fade" id="add-post">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">New Post</h4>
+            </div>
+            <div class="modal-body">
+              <p><span>Message</span><input type="text" placeholder="..."></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">Cancel</button>
+              <button type="button" class="btn btn-primary" id="save">Add Post</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </body>
