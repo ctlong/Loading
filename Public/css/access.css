@@ -59,3 +59,12 @@ section > p > span{
   margin-right: 15px;
   font-size: 20px;
 }
+
+.modal {
+  text-align: center;
+}
+
+.modal-body > p {
+  font-size: 16px;
+  color: green;
+}

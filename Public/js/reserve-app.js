@@ -45,7 +45,7 @@ $(document).ready(function() {
   var fillTable = function(response,table,hour) {
     for(var a=hour;a<24;a++) {
       var html = '';
-      html += '<tr>';
+      html += '<tr data-row="'+a+'">';
       html +=   '<td>';
       if(a<10) {html += '0' + a + ':00';}
       else{html +=     a + ':00';}
