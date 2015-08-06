@@ -174,6 +174,9 @@ $(document).ready(function() {
         console.log(response);
         if(response.ok) {
           $(button).parent().parent().remove();
+          if($('#table tr').length == 1) {
+            emptyTable();
+          }
         } else if(response.authenticated == false) {
           logOut();
         } else {

@@ -29,7 +29,7 @@ $(document).ready(function() {
           }
         } else if(response.reservationLimit) {
           if(new Date(this.day).toString() == new Date(today.slice(0,15)).toString()) {
-            runError('You cannot book more than two spots per day',0);
+            runError('You have already used your two reservations today',0);
           } else {
             runError('You cannot book more than two spots per day',1);
           }
