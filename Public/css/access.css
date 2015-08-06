@@ -36,6 +36,10 @@ nav > h3 > .btn-default {
   padding: 0px;
   color: red;
 }
+
+.modal {
+  top: 100px;
+}
 /*don't change above*/
 
 section {
@@ -58,4 +62,13 @@ section > p:nth-child(4) {
 section > p > span{
   margin-right: 15px;
   font-size: 20px;
+}
+
+.modal {
+  text-align: center;
+}
+
+.modal-body > p {
+  font-size: 16px;
+  color: green;
 }

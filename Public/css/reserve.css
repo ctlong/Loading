@@ -36,7 +36,16 @@ nav > h3 > .btn-default {
   padding: 0px;
   color: red;
 }
+
+.modal {
+  top: 100px;
+}
 /*don't change above*/
+
+h2 {
+  text-align: center;
+  margin-top: 35px;
+}
 
 nav > h3 > .btn-group > .btn-default {
   color: white;
@@ -55,7 +64,7 @@ nav > h3 > .btn-group > .dropdown-menu {
 
 section {
   text-align: center;
-  margin: 80px 5px;
+  margin: 60px 5px;
 }
 
 section:nth-child(2) {

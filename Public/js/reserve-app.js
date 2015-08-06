@@ -29,7 +29,7 @@ $(document).ready(function() {
           }
         } else if(response.reservationLimit) {
           if(new Date(this.day).toString() == new Date(today.slice(0,15)).toString()) {
-            runError('You cannot book more than two spots per day',0);
+            runError('You have already used your two reservations today',0);
           } else {
             runError('You cannot book more than two spots per day',1);
           }
@@ -42,10 +42,33 @@ $(document).ready(function() {
     });
   };
 
+  Reservation.prototype.getValues = function(button,table) {
+    var hour;
+    var machine;
+    var ind;
+    for(var a=1;a<24;a++) {
+      if($(button).parent().parent()[0] == $(table+' tr')[a]) {
+        ind = a;
+      }
+    }
+    $(table).find('tr').each(function (i, el) {
+      if(i == ind) {
+        hour = $($(this).find('td')[0]).text().slice(0,2);
+        var tds = $(this).find('td').each(function(index,elem){
+          if(elem == $(button).parent()[0]) {
+            machine = index;
+          }
+        });
+      }
+    });
+    this.machine = machine;
+    this.hour = hour;
+  };
+
   var fillTable = function(response,table,hour) {
     for(var a=hour;a<24;a++) {
       var html = '';
-      html += '<tr>';
+      html += '<tr data-row="'+a+'">';
       html +=   '<td>';
       if(a<10) {html += '0' + a + ':00';}
       else{html +=     a + ':00';}
@@ -102,7 +125,7 @@ $(document).ready(function() {
         }
       }
     });
-  }
+  };
 
   var moveOn = function(url) {
     window.location.href = "/"+url;
@@ -115,30 +138,7 @@ $(document).ready(function() {
     html +=   input;
     html += '</p>';
     $($('section')[section]).prepend(html)
-  }
-
-  Reservation.prototype.getValues = function(button,table) {
-    var hour;
-    var machine;
-    var ind;
-    for(var a=1;a<24;a++) {
-      if($(button).parent().parent()[0] == $(table+' tr')[a]) {
-        ind = a;
-      }
-    }
-    $(table).find('tr').each(function (i, el) {
-      if(i == ind) {
-        hour = $($(this).find('td')[0]).text().slice(0,2);
-        var tds = $(this).find('td').each(function(index,elem){
-          if(elem == $(button).parent()[0]) {
-            machine = index;
-          }
-        });
-      }
-    });
-    this.machine = machine;
-    this.hour = hour;
-  }
+  };
 
   $(document).on('click','.res',function() {
     var newReservation = new Reservation();

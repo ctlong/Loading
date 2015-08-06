@@ -3,10 +3,10 @@
 <head>
   <title>Loading</title>
   <link rel="stylesheet" type="text/css" href="public/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="public/css/profile.css">
+  <link rel="stylesheet" type="text/css" href="public/css/forum.css">
   <script type="text/javascript" src="public/bower_components/jquery/dist/jquery.min.js"></script>
   <script type="text/javascript" src="public/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="public/js/profile-app.js"></script>
+  <script type="text/javascript" src="public/js/forum-app.js"></script>
 </head>
 <body>
   <div class="wrapper">
@@ -28,45 +28,24 @@
         </h3>
       </nav>
       <section>
+        <h2>Forum</h2>
+        <section id="forum">
+          <button class="btn btn-default" data-toggle="modal" data-target="#add-post" id="post">Post</button>
+        </section>
       </section>
-      <section>
-        <table class="table table-striped" id="table">
-          <tr>
-            <td>Time</td>
-            <td>Machine</td>
-            <td>Day</td>
-          </tr>
-        </table>
-      </section>
-      <div class="modal fade" id="change-email">
+      <div class="modal fade" id="add-post">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Change Email</h4>
+              <h4 class="modal-title">New Post</h4>
             </div>
             <div class="modal-body">
-              <p><span>New Email</span><input type="text" placeholder="example@blank.com"></p>
+              <p><span>Title</span><input type="text" placeholder="20 characters max"></p>
+              <p><span>Message</span><input type="text" placeholder="200 characters max"></p>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">Cancel</button>
-              <button type="button" class="btn btn-primary" id="save">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal fade" id="change-password">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Change Password</h4>
-            </div>
-            <div class="modal-body">
-              <p><span>Old Password</span><input type="password" placeholder="password"></p>
-              <p><span>New Password</span><input type="password" placeholder="password"></p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">Cancel</button>
-              <button type="button" class="btn btn-primary" id="save">Save changes</button>
+              <button type="button" class="btn btn-primary" id="save">Add Post</button>
             </div>
           </div>
         </div>

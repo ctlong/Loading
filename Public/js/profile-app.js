@@ -8,24 +8,30 @@ $(document).ready(function() {
     this.oldPassword;
     this.password;
   }
-  var Reservation = function(hour,day,machine) {
-    this.hour = hour;
-    this.machine = machine;
-    this.day = day;
-  }
 
   User.prototype.getUserInfo = function() {
+    var constructHtml = function(name,email) {
+      var html = '';
+      html +=   '<h2>' + name + '</h2>';
+      html +=   '<p><span>Email:</span><span id="current-email">' + email + '</span><button class="btn btn-success" data-toggle="modal" data-target="#change-email">Edit</button></p>';
+      html +=   '<p><span>Password:</span><span>*****</span><button class="btn btn-success" data-toggle="modal" data-target="#change-password">Edit</button></p>';
+      $($('section')[0]).prepend(html);
+      $('section').show();
+    }
+
     $.ajax({
       context: this,
       type: 'GET',
-      url: 'users?username='+this.username+'&password='+this.password,
+      url: 'users',
       dataType: 'json',
       success: function(response) {
         if(response.authorized) {
           this.name = response.user.name;
           this.email = response.user.email;
+          this.username = response.user.username;
           this.id = response.user._id;
-          this.loggedIn();
+          constructHtml(this.name,this.email);
+          this.getReservationDataToday();
         } else if(response.authenticated == false) {
           logOut();
         }else if(response.userExists === false) {
@@ -39,54 +45,79 @@ $(document).ready(function() {
     })
   };
 
-  User.prototype.loggedIn = function() {
-    $('section > p').remove();
-    $('section > h2').remove();
-    var html = '';
-    html += '<section>';
-    html +=   '<h2>'+this.name+'</h2>';
-    html +=   '<p><span>Email:</span><span id="current-email">'+this.email+'</span><button class="btn btn-success" data-toggle="modal" data-target="#change-email">Edit</button></p>';
-    html +=   '<p><span>Password:</span><span>*****</span><button class="btn btn-success" data-toggle="modal" data-target="#change-password">Edit</button></p>';
-    $($('section')[0]).prepend(html);
-    $('section').show();
-    this.getReservationDataToday();
-  }
-
-  User.prototype.getReservationDataToday = function(date) {
-    date = today.slice(0,15);
-    date = date.replace(' ','-');
-    date = date.replace(' ','-');
-    date = date.replace(' ','-');
-
+  User.prototype.updateUser = function(type) {
     $.ajax({
       context: this,
-      type: 'GET',
-      url: 'reservations?day='+date+'&id='+this.id,
+      type: 'PUT',
+      url: 'users',
+      data: {
+        updatedUser: {
+          oldPassword : this.oldPassword,
+          newPassword : this.newPassword,
+          email : this.email
+        }
+      },
       dataType: 'json',
       success: function(response) {
-        if(response.length > 0) {
-          for(var a in response) {
-            var getReservation = new Reservation(response[a].hour,response[a].day,response[a].machine)
-            getReservation.fillTable(parseInt(new Date().toString().slice(16,18)),'Today');
-          }
-          this.getReservationDataTmrw(false);
+        $('#response').remove();
+        if(response.ok) {
+          $('#change-' + type + ' .modal-body').append('<p id="response" style="color:green;">'+ type + ' successfully changed</p>');
+          if(this.email) {$('#current-email').text(this.email);}
+          setTimeout(function() {
+            $('#change-' + type).modal('hide');
+            $('#response').remove();
+            $('.modal-body input').val('');
+          },1000);
+        } else if(response.authenticated == false || response.userExists == false) {
+          logOut();
+        } else if(response.authorized == false) {
+          $('#change-password .modal-body').append('<p id="response">Wrong password</p>');
         } else {
-          this.getReservationDataTmrw(true);
+          console.log(response);
         }
+      },
+      error: function(response) {
+        console.log(response);
+        $('#response').remove();
+        var html;
+        if(type == 'password') {html = 'Your password/s do not fit the required length';}
+        else {html = 'This is not an email';}
+        $('#change-' + type + ' .modal-body').append('<p id="response">' + html + '</p>');
       }
     });
   };
 
-  User.prototype.getReservationDataTmrw = function(empty) {
-    date = tmrw;
-    date = date.replace(' ','-');
-    date = date.replace(' ','-');
-    date = date.replace(' ','-');
+  User.prototype.getReservationDataToday = function() {
+    day = today.slice(0,15);
+    day = day.replace(' ','-');
+    day = day.replace(' ','-');
+    day = day.replace(' ','-');
 
     $.ajax({
       context: this,
       type: 'GET',
-      url: 'reservations?day='+date+'&id='+this.id,
+      url: 'reservations?day=' + day + '&id=' + this.id,
+      dataType: 'json',
+      success: function(response) {
+        for(var a in response) {
+          var getReservation = new Reservation(response[a].hour,response[a].day,response[a].machine)
+          getReservation.fillTable(parseInt(new Date().toString().slice(16,18)),'Today');
+        }
+        this.getReservationDataTmrw();
+      }
+    });
+  };
+
+  User.prototype.getReservationDataTmrw = function() {
+    day = tmrw;
+    day = day.replace(' ','-');
+    day = day.replace(' ','-');
+    day = day.replace(' ','-');
+
+    $.ajax({
+      context: this,
+      type: 'GET',
+      url: 'reservations?day=' + day + '&id=' + this.id,
       dataType: 'json',
       success: function(response) {
         if(response.length > 0) {
@@ -95,19 +126,16 @@ $(document).ready(function() {
             getReservation.fillTable(0,'Tomorrow');
           }
         } else {
-          if(empty) {emptyTable();}
+          if($('#table tr').length == 1) {emptyTable();}
         }
       }
     });
   };
 
-  var emptyTable = function() {
-    $('#table').hide();
-    var html = '';
-    html += '<h3>';
-    html +=   'No Reservations';
-    html += '</h3>';
-    $($('section')[2]).append(html);
+  var Reservation = function(hour,day,machine) {
+    this.hour = hour;
+    this.machine = machine;
+    this.day = day;
   };
 
   Reservation.prototype.fillTable = function(hour,day) {
@@ -115,7 +143,7 @@ $(document).ready(function() {
       var html = '';
       html += '<tr>';
       html +=   '<td>';
-      html +=     this.hour+':00';
+      html +=     this.hour + ':00';
       html +=   '</td>';
       html +=   '<td>';
       html +=     this.machine;
@@ -146,6 +174,9 @@ $(document).ready(function() {
         console.log(response);
         if(response.ok) {
           $(button).parent().parent().remove();
+          if($('#table tr').length == 1) {
+            emptyTable();
+          }
         } else if(response.authenticated == false) {
           logOut();
         } else {
@@ -154,51 +185,15 @@ $(document).ready(function() {
       }
     });
   };
-
-  User.prototype.updateUser = function() {
-    console.log(this)
-    $.ajax({
-      context: this,
-      type: 'PUT',
-      url: 'users',
-      data: {
-        updatedUser: {
-          oldPassword : this.oldPassword,
-          newPassword : this.newPassword,
-          email : this.email
-        }
-      },
-      dataType: 'json',
-      success: function(response) {
-        $('#response').remove();
-        if(response.ok) {
-          $('#change-password .modal-body').append('<p id="response" style="color:green;">Password successfully changed</p>');
-          $('#change-email .modal-body').append('<p id="response" style="color:green;">Email successfully changed</p>');
-          if(this.email) {$('#current-email').text(this.email);}
-          setTimeout(function() {
-            $('#change-password').modal('hide');
-            $('#change-email').modal('hide');
-            $('#response').remove();
-            $('#response').remove();
-            $('input').val('');
-          },1000);
-        } else if(response.authenticated == false || response.userExists == false) {
-          logOut();
-        } else if(response.authorized == false) {
-          $('#change-password .modal-body').append('<p id="response">Wrong password</p>');
-        } else {
-          console.log(response);
-        }
-      },
-      error: function(response) {
-        console.log(response);
-        $('#response').remove();
-        $('#response').remove();
-        $('#change-password .modal-body').append('<p id="response">Your password/s do not fit the required length</p>');
-        $('#change-email .modal-body').append('<p id="response">This is not an email</p>');
-      }
-    });
-  }
+  
+  var emptyTable = function() {
+    $('#table').hide();
+    var html = '';
+    html += '<h3>';
+    html +=   'No Reservations';
+    html += '</h3>';
+    $($('section')[1]).append(html);
+  };
 
   var logOut = function() {
     $.ajax({
@@ -216,7 +211,7 @@ $(document).ready(function() {
   };
 
   var moveOn = function(url) {
-    window.location.href = "/"+url;
+    window.location.href = "/" + url;
   };
 
   var runError = function(input,section) {
@@ -233,15 +228,16 @@ $(document).ready(function() {
     if($('#change-password #save')[0] == $(this)[0]) {
       updatedUser.oldPassword = $('#change-password input')[0].value;
       updatedUser.newPassword = $('#change-password input')[1].value;
+      updatedUser.updateUser('password');
     } else {
       updatedUser.email = $('#change-email input')[0].value;
+      updatedUser.updateUser('email');
     }
-    updatedUser.updateUser();
   });
 
   $(document).on('click','#cancel',function() {
     $('#response').remove();
-    $('input').val('');
+    $('.modal-body input').val('');
   });
 
   $(document).on('click','.remove',function() {
@@ -268,9 +264,10 @@ $(document).ready(function() {
 
   $(document).on('click','#log-in',function() {
     var curUser = new User();
+    curUser.getUserInfo();
     curUser.username = $('input')[0].value;
     curUser.password = $('input')[1].value;
-    curUser.getUserInfo();
+    
   });
 
   $(document).on('click','#log-out',function() {
@@ -286,7 +283,9 @@ $(document).ready(function() {
     moveOn('reserve');
   });
 
-  //initiate dates on tables and fill tables
+  //initiate dates on tables, fill tables, and get User info
   var today = new Date().toString();
-  var tmrw = new Date(today.slice(4,7) + ' 0' + (parseInt(today.slice(8,10))+1) + ' ' + today.slice(12,15)).toString().slice(0,15);
+  var tmrw = new Date(today.slice(4,7) + ' 0' + (parseInt(today.slice(8,10))+1) + ' ' + today.slice(12,15)).toString().slice(0,15)
+  var curUser = new User();
+  curUser.getUserInfo();;
 });

@@ -51,18 +51,29 @@ exports.register = function(server,options,next) {
         var db = request.server.plugins['hapi-mongodb'].db;
         var username = request.query.username;
         var password = request.query.password
-        Auth.authenticated(request,function(result) {
-          if(!result.authenticated) {return reply(result);}
-          db.collection('users').findOne({$and: [{username : username},{_id : result.user_id}]},function(err,userMongo) {
-            if(err) {return reply('Internal Mongo Error ', err);}
-            if(userMongo === null) {return reply({userExists: false});}
-            Bcrypt.compare(password, userMongo.password, function(err, same) {
-              if(err) {return reply('Bcrypt error',err)}
-              if(!same) {return reply({authorized : false});}
-              reply({authorized : true,user : userMongo});
+        if(password && username) {
+          Auth.authenticated(request,function(result) {
+            if(!result.authenticated) {return reply(result);}
+            db.collection('users').findOne({$and: [{username : username},{_id : result.user_id}]},function(err,userMongo) {
+              if(err) {return reply('Internal Mongo Error ', err);}
+              if(userMongo === null) {return reply({userExists: false});}
+              Bcrypt.compare(password, userMongo.password, function(err, same) {
+                if(err) {return reply('Bcrypt error',err)}
+                if(!same) {return reply({authorized : false});}
+                reply({authorized : true,user : userMongo});
+              });
             });
           });
-        });
+        } else {
+          Auth.authenticated(request,function(result) {
+            if(!result.authenticated) {return reply(result);}
+            db.collection('users').findOne({_id : result.user_id},function(err,userMongo) {
+              if(err) {return reply('Internal Mongo Error ', err);}
+              if(userMongo === null) {return reply({userExists: false});}
+              reply({authorized : true, user : userMongo});
+            });
+          });
+        }
       }
     },
     {

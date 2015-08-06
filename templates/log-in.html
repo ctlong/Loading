@@ -5,6 +5,7 @@
   <link rel="stylesheet" type="text/css" href="public/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="public/css/access.css">
   <script type="text/javascript" src="public/bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="public/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="public/js/log-in-app.js"></script>
 </head>
 <body>
@@ -19,6 +20,18 @@
         <p><span>Password</span><input type="password" placeholder="password"></p>
         <p><button class="btn btn-default" id="log-in">Log In</button></p>
       </section>
+      <div class="modal fade" id="success">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body">
+              <p>You have successfully logged in, redirecting...</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </body>

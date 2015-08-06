@@ -25,6 +25,7 @@ var plugins = [
   {register: require('./routes/sessions.js')},
   {register: require('./routes/users.js')},
   {register: require('./routes/reservations.js')},
+  {register: require('./routes/posts.js')},
   {
     register: require('yar'),
     options: {

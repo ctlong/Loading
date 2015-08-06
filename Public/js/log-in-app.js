@@ -18,7 +18,10 @@ $(document).ready(function() {
       dataType: 'json',
       success: function(response) {
         if(response.ok) {
-          window.location.href = "/reserve";
+          $('#success').modal('show')
+          setTimeout(function() {
+            window.location.href = "/reserve";
+          },1500);
         } else if(!response.authorized) {
           runError('Your password does not match your username.');
         } else if(!response.userExists) {

@@ -23,7 +23,10 @@ $(document).ready(function() {
       dataType: 'json',
       success: function(response) {
         if(response.ok) {
-          window.location.href = "/log-in";
+          $('#success').modal('show');
+          setTimeout(function() {
+            window.location.href = "/log-in";
+          },1500);
         } else if(response.userExists) {
           runError('Either this username or this email already exists');
         } else {
