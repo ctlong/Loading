@@ -157,15 +157,8 @@ $(document).ready(function() {
   });
 
   $(document).on('click','a',function() {
-    if(this == $('a')[0]) {
-      moveOn('profile');
-    } else if(this == $('a')[1]) {
-      moveOn('reserve');
-    } else if(this == $('a')[2]) {
-      moveOn('chart');
-    } else {
-      moveOn('forum');
-    }
+      url = $(this).text().toLowerCase();
+      moveOn(url);
   });
 
   $(document).on('click','#logo',function() {
