@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "bower install && grunt build"
+    "postinstall": "bower install"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
   "homepage": "https://github.com/WDI-HK-8/Loading#readme",
   "dependencies": {
     "bcrypt": "^0.8.4",
+    "bower": "^1.4.1",
     "handlebars": "^3.0.3",
     "hapi": "^8.8.1",
     "hapi-mongodb": "^3.0.0",
