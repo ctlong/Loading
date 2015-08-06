@@ -4,8 +4,8 @@
   "description": "Site for laundry machine reservations",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
-    "postinstall": "bower install && grunt build"
+    "start": "node index.js",
+    "postinstall": "bower install”
   },
   "repository": {
     "type": "git",
